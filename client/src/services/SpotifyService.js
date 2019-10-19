@@ -2,19 +2,22 @@ import SpotifyWebApi from "spotify-web-api-js";
 const spotifyApi = new SpotifyWebApi();
 
 export default {
-  componentDidMount,
-
+  getMyRecentlyPlayed,
   getToken,
   seeSavedSongs,
   saveSong
 };
 
-function componentDidMount() {
-  getToken.call(this);
-  getMyRecentlyPlayed.call(this);
+function getToken() {
+  const params = getHashParams();
+  const token = params.access_token;
+  if (token) {
+    spotifyApi.setAccessToken(token);
+  }
+  this.setState({
+    loggedIn: token ? true : false
+  });
 }
-
-//==============================================================================
 
 async function getMyRecentlyPlayed() {
   await spotifyApi
@@ -34,37 +37,28 @@ async function getMyRecentlyPlayed() {
     });
 }
 
-async function getRecommendations() {
-  const recentId = this.state.recentlyPlayed.track.id;
+async function saveSong(callback) {
+  const currentSong = this.state.tracks[this.state.index];
+  const currentSongId = currentSong.id;
+  await spotifyApi.addToMySavedTracks([currentSongId]).catch(() => {
+    console.log("save dunt work");
+  });
 
+  if (callback) {
+    callback(currentSong);
+  }
+}
+
+async function seeSavedSongs() {
   await spotifyApi
-    .getRecommendations({ seed_tracks: [recentId], limit: 100 })
+    .getMySavedTracks()
     .then(response => {
-      this.setState({
-        tracks: response.tracks
-      });
+      console.log(response);
     })
     .catch(() => {
-      this.setState({
-        tracks: undefined
-      });
+      console.log("Error seeing songs");
     });
 }
-
-//----------------------------------------------------------------------------------------
-
-function getToken() {
-  const params = getHashParams();
-  const token = params.access_token;
-  if (token) {
-    spotifyApi.setAccessToken(token);
-  }
-  this.setState({
-    loggedIn: token ? true : false
-  });
-}
-
-//========================================================================================
 
 function getHashParams() {
   const hashParams = {};
@@ -79,20 +73,19 @@ function getHashParams() {
   return hashParams;
 }
 
-async function saveSong() {
-  const currentSongId = this.state.tracks[this.state.index].id;
-  await spotifyApi.addToMySavedTracks([currentSongId]).catch(() => {
-    console.log("save dunt work");
-  });
-}
+async function getRecommendations() {
+  const recentId = this.state.recentlyPlayed.track.id;
 
-async function seeSavedSongs() {
   await spotifyApi
-    .getMySavedTracks()
+    .getRecommendations({ seed_tracks: [recentId], limit: 100 })
     .then(response => {
-      console.log(response);
+      this.setState({
+        tracks: response.tracks
+      });
     })
     .catch(() => {
-      console.log("Error seeing songs");
+      this.setState({
+        tracks: undefined
+      });
     });
 }
