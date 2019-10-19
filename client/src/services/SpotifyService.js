@@ -4,7 +4,9 @@ const spotifyApi = new SpotifyWebApi();
 export default {
   componentDidMount,
 
-  getToken
+  getToken,
+  seeSavedSongs,
+  saveSong
 };
 
 function componentDidMount() {
@@ -22,7 +24,7 @@ async function getMyRecentlyPlayed() {
         {
           recentlyPlayed: response.items[0]
         },
-          () => getRecommendations.call(this)
+        () => getRecommendations.call(this)
       );
     })
     .catch(() => {
@@ -75,4 +77,22 @@ function getHashParams() {
     e = r.exec(q);
   }
   return hashParams;
+}
+
+async function saveSong() {
+  const currentSongId = this.state.tracks[this.state.index].id;
+  await spotifyApi.addToMySavedTracks([currentSongId]).catch(() => {
+    console.log("save dunt work");
+  });
+}
+
+async function seeSavedSongs() {
+  await spotifyApi
+    .getMySavedTracks()
+    .then(response => {
+      console.log(response);
+    })
+    .catch(() => {
+      console.log("Error seeing songs");
+    });
 }

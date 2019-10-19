@@ -2,12 +2,7 @@ import React from "react";
 
 export default class RecommendationDisplay extends React.Component {
 
-
-
-
     render() {
-        console.log("Okay");
-        console.log(this.props.track);
         return (
             <div>
                 <h1>{this.props.track.name}</h1>

@@ -1,7 +1,4 @@
-import SpotifyWebApi from "spotify-web-api-js";
-const spotifyApi = new SpotifyWebApi();
-
-export default { skipSong, saveSong, seeSavedSongs};
+export default { skipSong };
 
 function skipSong() {
   if (this.state.index < this.state.totalTracks - 1) {
@@ -13,25 +10,4 @@ function skipSong() {
       index: 0
     });
   }
-}
-
-async function saveSong() {
-  const currentSongId = this.state.tracks[this.state.index].id;
-  await spotifyApi
-      .addToMySavedTracks([currentSongId])
-      .catch(() => {
-        console.log("save dunt work")
-          }
-      )
-
-}
-
-async function seeSavedSongs() {
-
-  await spotifyApi
-      .getMySavedTracks()
-      .then(response => {
-        console.log(response);
-      });
-
 }

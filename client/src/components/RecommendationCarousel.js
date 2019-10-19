@@ -2,14 +2,15 @@ import React from "react";
 
 import RecommendationDisplay from "./RecommendationDisplay";
 import RecommendationCarouselService from "../services/RecommendationCarouselService";
+import SpotifyService from "../services/SpotifyService";
 
 export default class RecommendationCarousel extends React.Component {
   constructor(props) {
     super(props);
 
+    this.seeSavedSongs = SpotifyService.seeSavedSongs.bind(this);
+    this.saveSong = SpotifyService.saveSong.bind(this);
     this.skipSong = RecommendationCarouselService.skipSong.bind(this);
-    this.saveSong = RecommendationCarouselService.saveSong.bind(this);
-    this.seeSavedSongs = RecommendationCarouselService.seeSavedSongs.bind(this);
 
     this.state = {
       tracks: this.props.tracks,
@@ -19,7 +20,7 @@ export default class RecommendationCarousel extends React.Component {
   }
 
   render() {
-      this.seeSavedSongs();
+    this.seeSavedSongs();
     const currentTrack = this.state.tracks[this.state.index];
     return (
       <div>
