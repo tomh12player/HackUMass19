@@ -11,11 +11,13 @@ export default class RecommendationCarousel extends React.Component {
     this.seeSavedSongs = SpotifyService.seeSavedSongs.bind(this);
     this.saveSong = SpotifyService.saveSong.bind(this);
     this.skipSong = RecommendationCarouselService.skipSong.bind(this);
+    this.componentDidMount = RecommendationCarouselService.componentDidMount.bind(this);
 
     this.state = {
       tracks: this.props.tracks,
       totalTracks: this.props.tracks.length,
-      index: 0
+      index: 0,
+      hasPreview: false
     };
   }
 
