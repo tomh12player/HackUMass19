@@ -1,33 +1,52 @@
 import React from "react";
 import SpotifyService from "../services/SpotifyService";
+import HomePageService from "../services/HomePageService";
 import RecommendationCarousel from "./RecommendationCarousel";
+import RecentlySavedSongsDisplay from "./RecentlySavedSongsDisplay";
 
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
 
     this.getToken = SpotifyService.getToken.bind(this);
-    this.componentDidMount = SpotifyService.componentDidMount.bind(this);
+    this.getMyRecentlyPlayed = SpotifyService.getMyRecentlyPlayed.bind(this);
+
+    this.componentDidMount = HomePageService.componentDidMount.bind(this);
+    this.saveTrack = HomePageService.saveTrack.bind(this);
+    this.onSavedTracksPressed = HomePageService.onSavedTracksPressed.bind(this);
 
     this.state = {
-      loggedIn: false,
-      nowPlaying: { name: "Not Checked", albumArt: "" }
+      savedTracksView: false,
+      savedTracks: [],
+      loggedIn: false
     };
   }
 
   render() {
     return (
       <div className="App">
-        <a onClick={this.getToken} href="http://localhost:8888">
-          {" "}
-          Login to Spotify{" "}
-        </a>
-        <div>Now Playing: {this.state.nowPlaying.name}</div>
-        <div>
-          <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} />
-        </div>
-        {this.state.tracks && (
-          <RecommendationCarousel tracks={this.state.tracks} />
+        {!this.state.savedTracksView ? (
+          <div>
+            {!this.state.loggedIn && (
+              <a onClick={this.getToken} href="http://localhost:8888">
+                {" "}
+                Login to Spotify{" "}
+              </a>
+            )}
+            {this.state.loggedIn && this.state.tracks && (
+              <div>
+                <RecommendationCarousel
+                  tracks={this.state.tracks}
+                  saveTrack={this.saveTrack}
+                />
+                <button onClick={this.onSavedTracksPressed}>
+                  See Saved Songs From Session
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <RecentlySavedSongsDisplay savedTracks={this.state.savedTracks} />
         )}
       </div>
     );

@@ -8,7 +8,6 @@ export default class RecommendationCarousel extends React.Component {
   constructor(props) {
     super(props);
 
-    this.seeSavedSongs = SpotifyService.seeSavedSongs.bind(this);
     this.saveSong = SpotifyService.saveSong.bind(this);
     this.skipSong = RecommendationCarouselService.skipSong.bind(this);
 
@@ -20,13 +19,14 @@ export default class RecommendationCarousel extends React.Component {
   }
 
   render() {
-    this.seeSavedSongs();
     const currentTrack = this.state.tracks[this.state.index];
     return (
       <div>
         <RecommendationDisplay track={currentTrack} />
         <button onClick={this.skipSong}>Skip</button>
-        <button onClick={this.saveSong}>Save Song</button>
+        <button onClick={() => this.saveSong(this.props.saveTrack)}>
+          Save Song
+        </button>
       </div>
     );
   }
