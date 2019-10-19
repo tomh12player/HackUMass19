@@ -4,31 +4,47 @@ const spotifyApi = new SpotifyWebApi();
 export default {
   componentDidMount,
 
-  getNowPlaying,
   getToken
 };
 
 function componentDidMount() {
   getToken.call(this);
+  getMyRecentlyPlayed.call(this);
 }
 
 //==============================================================================
 
-async function getNowPlaying() {
+async function getMyRecentlyPlayed() {
   await spotifyApi
-    .getMyCurrentPlaybackState()
+    .getMyRecentlyPlayedTracks()
+    .then(response => {
+      this.setState(
+        {
+          recentlyPlayed: response.items[0]
+        },
+          () => getRecommendations.call(this)
+      );
+    })
+    .catch(() => {
+      this.setState({
+        recentlyPlayed: undefined
+      });
+    });
+}
+
+async function getRecommendations() {
+  const recentId = this.state.recentlyPlayed.track.id;
+
+  await spotifyApi
+    .getRecommendations({ seed_tracks: [recentId], limit: 100 })
     .then(response => {
       this.setState({
-        nowPlaying: {
-          name: response.item.name,
-          albumArt: response.item.album.images[0].url
-        }
+        tracks: response.tracks
       });
     })
     .catch(() => {
       this.setState({
-        name: undefined,
-        albumArt: undefined
+        tracks: undefined
       });
     });
 }
@@ -41,7 +57,6 @@ function getToken() {
   if (token) {
     spotifyApi.setAccessToken(token);
   }
-  console.log(token);
   this.setState({
     loggedIn: token ? true : false
   });

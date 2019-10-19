@@ -8,7 +8,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log("Hello");
     return <HomePage />;
   }
 }

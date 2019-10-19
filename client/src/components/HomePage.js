@@ -1,12 +1,12 @@
 import React from "react";
 import SpotifyService from "../services/SpotifyService";
+import RecommendationCarousel from "./RecommendationCarousel";
 
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
 
     this.getToken = SpotifyService.getToken.bind(this);
-    this.getNowPlaying = SpotifyService.getNowPlaying.bind(this);
     this.componentDidMount = SpotifyService.componentDidMount.bind(this);
 
     this.state = {
@@ -26,8 +26,8 @@ export default class HomePage extends React.Component {
         <div>
           <img src={this.state.nowPlaying.albumArt} style={{ height: 150 }} />
         </div>
-        {this.state.loggedIn && (
-          <button onClick={this.getNowPlaying}>Check Now Playing</button>
+        {this.state.tracks && (
+          <RecommendationCarousel tracks={this.state.tracks} />
         )}
       </div>
     );
