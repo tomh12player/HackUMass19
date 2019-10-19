@@ -8,6 +8,8 @@ export default class RecommendationCarousel extends React.Component {
     super(props);
 
     this.skipSong = RecommendationCarouselService.skipSong.bind(this);
+    this.saveSong = RecommendationCarouselService.saveSong.bind(this);
+    this.seeSavedSongs = RecommendationCarouselService.seeSavedSongs.bind(this);
 
     this.state = {
       tracks: this.props.tracks,
@@ -17,13 +19,13 @@ export default class RecommendationCarousel extends React.Component {
   }
 
   render() {
-      console.log("Why");
-      console.log(this.state);
+      this.seeSavedSongs();
     const currentTrack = this.state.tracks[this.state.index];
     return (
       <div>
         <RecommendationDisplay track={currentTrack} />
         <button onClick={this.skipSong}>Skip</button>
+        <button onClick={this.saveSong}>Save Song</button>
       </div>
     );
   }
